@@ -3,22 +3,26 @@ import requests
 import argparse
 import os,sys
 
-def start():
-    s = requests.Session()
-# credentials below are demo credentials    
-    BULKCNAMID = 'b5398435ec3ecffd07ded0fafd90e45d'
-    DID = '3109060901'
-    url = 'https://cnam.bulkCNAM.com/?id={}&did={}'.format(BULKCNAMID, DID)
-    print(url)
+def start(DID):
+    url = 'https://cnam.bulkCNAM.com/?id='+apikey+'&did='+DID
+#    print(url)
     r = s.get(url)
     status = r.status_code
+#    print(status)
     if (status != 200):
         print(status)
         print(url)
         r.raise_for_status()
     print(r.text)
 
+BULKAPI=''
+try:
+    apikey = os.environ["BULKAPI"]
+except KeyError:
+    apikey = 'NONE'
+
+s = requests.Session()
+DID = '9517884141'
 
 if __name__ == '__main__':
-    start()
-
+    start(DID)
