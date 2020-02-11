@@ -1,7 +1,8 @@
 #! /usr/bin/env python3
-import requests
+#pylint: disable=missing-module-docstring,missing-function-docstring,invalid-name
 import argparse
-import os,sys
+import os
+import requests
 
 def create_parse():
     parser = argparse.ArgumentParser(
@@ -13,21 +14,21 @@ def create_parse():
 def start():
     parser = create_parse()
     args = parser.parse_args()
-    subject=args.subject
+    subject = args.subject
     for i in subject:
         print(process(i))
 
 def process(subject):
-    DID=str(subject)
+    DID = str(subject)
     url = 'https://cnam.bulkCNAM.com/?id='+apikey+'&did='+DID
 #    print(url)
     r = s.get(url)
     status = r.status_code
-    if (status != 200):
+    if status != 200:
         print(status)
         print(url)
         r.raise_for_status()
-    return(r.text)
+    return r.text
 
 try:
     apikey = os.environ["BULKAPI"]
