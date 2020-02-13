@@ -35,7 +35,7 @@ class mainWindow(wx.Frame):
     def __init__(self, parent, title):
         super(mainWindow, self).__init__(parent, title=title, style=wx.MAXIMIZE_BOX
                 | wx.SYSTEM_MENU | wx.CAPTION |  wx.CLOSE_BOX | wx.MINIMIZE_BOX,
-            size=(300, 200))
+            size=(300, 500))
         self.Centre()
         self.InitUI()
 
@@ -50,20 +50,26 @@ class mainWindow(wx.Frame):
  #       self.Bind(wx.EVT_MENU, self.Import, importItem)
 
         panel=wx.Panel(self)
-        font = wx.SystemSettings.GetFont(wx.SYS_SYSTEM_FONT)
-        font.SetPointSize(8)
+        sizer = wx.GridBagSizer(5, 3)
 
-        vbox = wx.BoxSizer(wx.VERTICAL)
-
-        hbox1 = wx.BoxSizer(wx.HORIZONTAL)
         st1 = wx.StaticText(panel, label='Lookup target')
-        st1.SetFont(font)
-        hbox1.Add(st1, flag=wx.RIGHT, border=8)
+        sizer.Add(st1, pos=(0, 0), flag=wx.TOP|wx.LEFT|wx.BOTTOM, border=5)
+
         tc = wx.TextCtrl(panel)
-        hbox1.Add(tc, proportion=1)
-        vbox.Add(hbox1, flag=wx.EXPAND|wx.LEFT|wx.RIGHT|wx.TOP, border=10)
-        vbox.Add((-1, 10))
-        panel.SetSizer(vbox)
+        sizer.Add(tc, pos=(1, 0), 
+            flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
+
+        btn1 = wx.Button(panel, label='Go')
+        sizer.Add(btn1, pos=(2,0))
+
+        tc2 = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        sizer.Add(tc2, pos=(3,0), 
+                flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
+
+        sizer.AddGrowableRow(3)
+        sizer.AddGrowableCol(0)
+
+        panel.SetSizer(sizer)
 
     def OnQuit(self, e):
         self.Close()
