@@ -48,6 +48,7 @@ class mainWindow(wx.Frame):
         self.SetMenuBar(menubar)
         self.Bind(wx.EVT_MENU, self.OnQuit, fileItem)
  #       self.Bind(wx.EVT_MENU, self.Import, importItem)
+        self.CreateStatusBar()
 
         panel=wx.Panel(self)
         sizer = wx.GridBagSizer(5, 3)
@@ -55,35 +56,48 @@ class mainWindow(wx.Frame):
         st1 = wx.StaticText(panel, label='Lookup target')
         sizer.Add(st1, pos=(0, 0), flag=wx.TOP|wx.LEFT|wx.BOTTOM, border=5)
 
-        tc = wx.TextCtrl(panel)
-        sizer.Add(tc, pos=(1, 0), 
+        self.tc = wx.TextCtrl(panel)
+        sizer.Add(self.tc, pos=(1, 0), 
             flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
 
         btn1 = wx.Button(panel, label='Go')
-        sizer.Add(btn1, pos=(2,0))
+        sizer.Add(btn1, pos=(2,0), flag=wx.ALL, border=5)
 
-        tc2 = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
-        sizer.Add(tc2, pos=(3,0), 
+        self.check = wx.CheckBox(panel, label="Remote lookup")
+        sizer.Add(self.check, pos=(3,0), flag=wx.ALL, border=5)
+
+        self.tc2 = wx.TextCtrl(panel, style=wx.TE_MULTILINE)
+        sizer.Add(self.tc2, pos=(4,0), 
                 flag=wx.EXPAND|wx.LEFT|wx.RIGHT, border=5)
 
-        sizer.AddGrowableRow(3)
+        sizer.AddGrowableRow(4)
         sizer.AddGrowableCol(0)
 
         panel.SetSizer(sizer)
 
+        self.Bind(wx.EVT_BUTTON,  self.Process, id=btn1.GetId())
+
     def OnQuit(self, e):
         self.Close()
+
+    def Process(self, e):
+        target = self.tc.GetValue()
+        if self.check.GetValue():
+            line = target + ' = ' + process(target) + '\n'
+        else:
+            line = target + '\n'
+        self.tc2.AppendText(line)
 
 #    def Import(self, e):
 #        self.SetTitle('Import monster')
 
 
 
-#try:
-#    apikey = os.environ["BULKAPI"]
-#except KeyError:
-#    apikey = 'NONE'
-#s = requests.Session()
+try:
+    apikey = os.environ["BULKAPI"]
+except KeyError:
+    apikey = 'NONE'
+s = requests.Session()
 def main():
     app = wx.App()
     frame = mainWindow(None, title='Caller ID Lookup')
