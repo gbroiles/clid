@@ -10,13 +10,20 @@ def create_parse():
     parser.add_argument('subject', help='phone number[s] to look up', nargs='*')
     return parser
 
+def cleanup(input):
+    allowed = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+    newstr = ""
+    for char in input:
+        if char in allowed:
+            newstr += char
+    return newstr
 
 def start():
     parser = create_parse()
     args = parser.parse_args()
     subject = args.subject
     for i in subject:
-        print(process(i))
+        print(process(cleanup(i)))
 
 def process(subject):
     DID = str(subject)
