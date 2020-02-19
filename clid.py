@@ -1,17 +1,20 @@
 #! /usr/bin/env python3
-# pylint: disable=missing-module-docstring,missing-function-docstring,invalid-name
+""" command line util to pull CLID data from bulkcnam.com """
+# pylint: disable=invalid-name
 import argparse
 import os
 import requests
 
 
 def create_parse():
+    """ set up parser options """
     parser = argparse.ArgumentParser(description="Caller ID lookup tool")
     parser.add_argument("subject", help="phone number[s] to look up", nargs="*")
     return parser
 
 
 def cleanup(input):
+    """ remove invalid characters from phone number """
     allowed = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
     newstr = ""
     for char in input:
@@ -21,6 +24,7 @@ def cleanup(input):
 
 
 def start():
+    """ main function body """
     parser = create_parse()
     args = parser.parse_args()
     subject = args.subject
@@ -29,6 +33,7 @@ def start():
 
 
 def process(subject):
+    """ return CLID string for phone number """
     DID = str(subject)
     url = "https://cnam.bulkCNAM.com/?id=" + apikey + "&did=" + DID
     #    print(url)
