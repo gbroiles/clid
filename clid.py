@@ -1,57 +1,25 @@
-#! /usr/bin/env python3
-""" command line util to pull CLID data from bulkcnam.com """
-# pylint: disable=invalid-name
-import argparse
-import os
-import requests
+""" helper functions for caller ID lookups """
 
 
-def create_parse():
-    """ set up parser options """
-    parser = argparse.ArgumentParser(description="Caller ID lookup tool")
-    parser.add_argument("subject", help="phone number[s] to look up", nargs="*")
-    return parser
-
-
-def cleanup(input):
-    """ remove invalid characters from phone number """
-    allowed = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    newstr = ""
-    for char in input:
-        if char in allowed:
-            newstr += char
-    return newstr
-
-
-def start():
-    """ main function body """
-    parser = create_parse()
-    args = parser.parse_args()
-    subject = args.subject
-    for i in subject:
-        print(process(cleanup(i)))
-
-
-def process(subject):
-    """ return CLID string for phone number """
-    DID = str(subject)
-    url = "https://cnam.bulkCNAM.com/?id=" + apikey + "&did=" + DID
+def process(apikey, session, subject):
+    """ perform actual lookup, apikey = API key, s = Requests session """
+    did = str(subject)
+    url = "https://cnam.bulkCNAM.com/?id=" + apikey + "&did=" + did
     #    print(url)
-    r = s.get(url)
-    status = r.status_code
+    result = session.get(url)
+    status = result.status_code
     if status != 200:
         print(status)
         print(url)
-        r.raise_for_status()
-    return r.text
+        result.raise_for_status()
+    return result.text, status
 
 
-try:
-    apikey = os.environ["BULKAPI"]
-except KeyError:
-    apikey = "NONE"
-
-s = requests.Session()
-
-if __name__ == "__main__":
-    start()
+def cleanup(dirty):
+    """ remove invalid characters from phone number """
+    allowed = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
+    newstring = ""
+    for char in dirty:
+        if char in allowed:
+            newstring += char
+    return newstring

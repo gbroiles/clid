@@ -3,29 +3,7 @@
 import os
 import requests
 import wx
-
-
-def processclid(subject):
-    DID = str(subject)
-    url = "https://cnam.bulkCNAM.com/?id=" + apikey + "&did=" + DID
-    #    print(url)
-    r = s.get(url)
-    status = r.status_code
-    if status != 200:
-        print(status)
-        print(url)
-        r.raise_for_status()
-    return r.text, status
-
-
-def cleanup(input):
-    charFound = False
-    allowed = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0"]
-    newstr = ""
-    for char in input:
-        if char in allowed:
-            newstr += char
-    return newstr
+import clid
 
 
 class mainWindow(wx.Frame):
@@ -81,15 +59,15 @@ class mainWindow(wx.Frame):
 
     def Process(self, e):
         dirty = self.tc.GetValue()
-        clean = cleanup(dirty)
+        clean = clid.cleanup(dirty)
         statusline = ""
         #        statusline = ('{}:{}:'.format(dirty,clean))
         self.tc.SetValue(clean)
         sb = self.GetStatusBar()
         if self.check.GetValue() and apikey != "NONE":
             sb.SetStatusText("Checking...")
-            answer, retval = processclid(clean)
-            statusline += str(retval)
+            answer, status = clid.process(apikey, session, clean)
+            statusline += str(status)
             line = clean + " = " + answer + "\n"
         else:
             statusline += "Remote check disabled."
@@ -107,7 +85,7 @@ try:
     apikey = os.environ["BULKAPI"]
 except KeyError:
     apikey = "NONE"
-s = requests.Session()
+session = requests.Session()
 
 
 def main():
