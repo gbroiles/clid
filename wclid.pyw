@@ -77,7 +77,14 @@ class mainWindow(wx.Frame):
             statusline += str(status)
             line = clean + " = " + answer + "\n"
         else:
-            statusline += "Remote check disabled/invalid."
+            reason = ""
+            if not self.checkGetValue():
+                reason = "Box not checked."
+            elif apikey == "NONE"
+                reason = "API key not found"
+            elif len(clean) <> 10:
+                reason = "Phone number must be 10 digits"
+            statusline += "Remote check disabled/invalid. "+reason 
             line = dirty + "/" + clean + " Not checked.\n"
         self.tc2.AppendText(line)
         self.tc.SetValue("")
