@@ -51,9 +51,22 @@ def main():
             break
         elif event == "Lookup":
             if len(values["target"]) != 10:
-                window["resultwindow"].update("Phone number must be 10 digits")
+                sg.popup("Phone number must be 10 digits")
             elif apikey == "NONE":
-                window["resultwindow"].update("Please set APIKEY environment variable")
+                values = sg.Window(
+                    "API Key",
+                    [
+                        [
+                            sg.T("bulkvs.com API Key"),
+                            sg.In(key="apikey"),
+                        ],
+                        [
+                            sg.B("OK"),
+                            sg.B("Cancel"),
+                        ],
+                    ],
+                ).read(close=True)
+                apikey = values["apikey"]
             else:
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
