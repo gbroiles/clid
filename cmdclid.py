@@ -7,6 +7,15 @@ import requests
 import clid
 import sys
 
+noAPImsg = """The BULKAPI environment variable is missing. 
+You must create an account at https://bulkvs.com prior to using this utility.
+Please copy the ID value from the CNAM Instructions/CNAM Methods page at 
+https://portal.bulkvs.com into the BULKAPI environment variable before using this program.
+The author of the program has no relationship to the operators of bulkvs.com and is not
+compensated for your use of their service.
+
+"""
+
 
 def create_parse():
     """set up parser options"""
@@ -23,23 +32,21 @@ def start():
     for i in subject:
         result, status = clid.process(apikey, session, clid.cleanup(i))
         if status == 401:
-            print("Authentication unsuccessful, check BULKAPI?")
+            print("Authentication unsuccessful, check BULKAPI environment variable?")
         elif status == 200:
-            print(result)
+            print(result,end='')
         else:
             print("Status: ", status)
             print("Result: ", result)
-    sys.exit(0)
+#    sys.exit(0)
 
 
 try:
     apikey = os.environ["BULKAPI"]
 except KeyError:
     apikey = "NONE"
-    print("No API key found. Please create an account with bulkvs.com.\n")
-    print("The ID found on the CNAM Instructions page at portal.bulkvs.com", end=" ")
-    print("should be stored in the BULKAPI environment variable.", end=" ")
-    print("Lookups probably won't work without it.\n")
+    print(noAPImsg)
+
 
 session = requests.Session()
 
