@@ -8,9 +8,10 @@ import clid
 
 
 class mainWindow(wx.Frame):
-    """ Main window """
+    """Main window"""
+
     def __init__(self, parent, title):
-        """ set up defaults """
+        """set up defaults"""
         super(mainWindow, self).__init__(
             parent, title=title, style=wx.DEFAULT_FRAME_STYLE, size=(300, 300)
         )
@@ -18,7 +19,7 @@ class mainWindow(wx.Frame):
         self.InitUI()
 
     def InitUI(self):
-        """ initialize UI elements """
+        """initialize UI elements"""
         menubar = wx.MenuBar()
         fileMenu = wx.Menu()
         #        importItem = fileMenu.Append(wx.ID_ANY, 'Import file for lookup')
@@ -60,11 +61,11 @@ class mainWindow(wx.Frame):
             self.check.SetValue(False)
 
     def onQuit(self, e):
-        """ user has requested close """
+        """user has requested close"""
         self.Close()
 
     def process(self, e):
-        """ process user input, return value """
+        """process user input, return value"""
         dirty = self.tc.GetValue()
         clean = clid.cleanup(dirty)
         statusline = ""
@@ -84,7 +85,7 @@ class mainWindow(wx.Frame):
                 reason = "API key not found"
             elif len(clean) != 10:
                 reason = "Phone number must be 10 digits"
-            statusline += "Remote check disabled/invalid. "+reason 
+            statusline += "Remote check disabled/invalid. " + reason
             line = dirty + "/" + clean + " Not checked.\n"
         self.tc2.AppendText(line)
         self.tc.SetValue("")
@@ -103,7 +104,7 @@ session = requests.Session()
 
 
 def main():
-    """ main event loop """
+    """main event loop"""
     app = wx.App()
     frame = mainWindow(None, title="Caller ID Lookup")
     frame.Show()
