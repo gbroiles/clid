@@ -12,7 +12,19 @@ session = requests.Session()
 
 result = "No lookup yet"
 
-layout = [
+menu_def = [
+    [
+        "File",
+        [
+            "Preferences",
+            "Exit",
+        ],
+    ],
+    ["Help", "About..."],
+]
+
+main_layout = [
+    [sg.Menu(menu_def)],
     [sg.Text("Phone number"), sg.InputText(), sg.Button("Lookup")],
     [sg.Text(result, key="resultwindow")],
     [sg.Button("Close")],
@@ -26,11 +38,11 @@ def main():
     except KeyError:
         apikey = "NONE"
 
-    window = sg.Window("Caller ID Lookup Utility", layout)
+    window = sg.Window("Caller ID Lookup Utility", main_layout)
     while True:
         event, values = window.read()
         if (
-            event == sg.WIN_CLOSED or event == "Close"
+            event == sg.WIN_CLOSED or event == "Close" or event == "Exit"
         ):  # if user closes window or clicks cancel
             break
         elif event == "Lookup":
