@@ -14,18 +14,22 @@ result = "No lookup yet"
 
 menu_def = [
     [
-        "File",
+        "&File",
         [
-            "Preferences",
-            "Exit",
+            "&Preferences",
+            "E&xit",
         ],
     ],
-    ["Help", "About..."],
+    ["&Help", "&About..."],
 ]
 
 main_layout = [
     [sg.Menu(menu_def)],
-    [sg.Text("Phone number"), sg.InputText(), sg.Button("Lookup")],
+    [
+        sg.Text("Phone number"),
+        sg.InputText(key="target", enable_events=True),
+        sg.Button("Lookup"),
+    ],
     [sg.Text(result, key="resultwindow")],
     [sg.Button("Close")],
 ]
@@ -46,9 +50,18 @@ def main():
         ):  # if user closes window or clicks cancel
             break
         elif event == "Lookup":
-            target = clid.cleanup(values[0])
-            result, status = clid.process(apikey, session, target)
-            window["resultwindow"].update(result)
+            if len(values["target"]) == 10:
+                target = clid.cleanup(values["target"])
+                result, status = clid.process(apikey, session, target)
+                window["resultwindow"].update(result)
+            else:
+                window["resultwindow"].update("Phone number must be 10 digits")
+        elif (
+            event == "target"
+            and values["target"]
+            and values["target"][-1] not in ("0123456789")
+        ):
+            window["target"].update(values["target"][:-1])
     window.close()
     sys.exit(0)
 
