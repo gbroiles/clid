@@ -80,9 +80,9 @@ class mainWindow(wx.Frame):
             reason = ""
             if not self.checkGetValue():
                 reason = "Box not checked."
-            elif apikey == "NONE"
+            elif apikey == "NONE":
                 reason = "API key not found"
-            elif len(clean) <> 10:
+            elif len(clean) != 10:
                 reason = "Phone number must be 10 digits"
             statusline += "Remote check disabled/invalid. "+reason 
             line = dirty + "/" + clean + " Not checked.\n"
