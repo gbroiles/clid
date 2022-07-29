@@ -34,10 +34,12 @@ def start():
         if status == 401:
             print("Authentication unsuccessful, check BULKAPI environment variable?")
         elif status == 200:
-            print(result,end='')
+            print(result, end="")
         else:
             print("Status: ", status)
             print("Result: ", result)
+
+
 #    sys.exit(0)
 
 
