@@ -58,6 +58,7 @@ def main():
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
                 window["resultwindow"].update(result)
+        # validation logic deletes non-digits entered into phone number field
         elif (
             event == "target"
             and values["target"]
