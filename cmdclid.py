@@ -36,10 +36,10 @@ try:
     apikey = os.environ["BULKAPI"]
 except KeyError:
     apikey = "NONE"
-    print("No API key found. Please create an account with bulkvs.com.")
+    print("No API key found. Please create an account with bulkvs.com.\n")
     print("The ID found on the CNAM Instructions page at portal.bulkvs.com", end=" ")
-    print("should be stored in the BULKAPI environment variable.")
-    print("Lookups probably won't work without it.")
+    print("should be stored in the BULKAPI environment variable.", end=" ")
+    print("Lookups probably won't work without it.\n")
 
 session = requests.Session()
 
