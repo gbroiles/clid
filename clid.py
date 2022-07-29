@@ -8,9 +8,9 @@ def process(apikey, session, subject):
     #    print(url)
     result = session.get(url)
     status = result.status_code
-#    if status != 200:
-#        print("Status: ",status)
-#        print("URL: ",url)
+    #    if status != 200:
+    #        print("Status: ",status)
+    #        print("URL: ",url)
     #        result.raise_for_status()
     return result.text, status
 

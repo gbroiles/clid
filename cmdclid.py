@@ -23,12 +23,12 @@ def start():
     for i in subject:
         result, status = clid.process(apikey, session, clid.cleanup(i))
         if status == 401:
-            print('Authentication unsuccessful, check BULKAPI?')
+            print("Authentication unsuccessful, check BULKAPI?")
         elif status == 200:
             print(result)
         else:
-            print("Status: ",status)
-            print("Result: ",result)
+            print("Status: ", status)
+            print("Result: ", result)
     sys.exit(0)
 
 
