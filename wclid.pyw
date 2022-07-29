@@ -50,12 +50,14 @@ def main():
         ):  # if user closes window or clicks cancel
             break
         elif event == "Lookup":
-            if len(values["target"]) == 10:
+            if len(values["target"]) != 10:
+                window["resultwindow"].update("Phone number must be 10 digits")
+            elif apikey == "NONE":
+                window["resultwindow"].update("Please set APIKEY environment variable")
+            else:
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
                 window["resultwindow"].update(result)
-            else:
-                window["resultwindow"].update("Phone number must be 10 digits")
         elif (
             event == "target"
             and values["target"]
