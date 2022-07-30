@@ -34,13 +34,15 @@ main_layout = [
     [sg.Button("Close")],
 ]
 
+try:
+    apikey = os.environ["BULKAPI"]
+except KeyError:
+    apikey = "NONE"
+
 
 def main():
     """main event loop"""
-    try:
-        apikey = os.environ["BULKAPI"]
-    except KeyError:
-        apikey = "NONE"
+    global apikey
 
     window = sg.Window("Caller ID Lookup Utility", main_layout)
     while True:
@@ -53,24 +55,17 @@ def main():
             if len(values["target"]) != 10:
                 sg.popup("Phone number must be 10 digits")
             elif apikey == "NONE":
-                values = sg.Window(
-                    "API Key",
-                    [
-                        [
-                            sg.T("bulkvs.com API Key"),
-                            sg.In(key="apikey"),
-                        ],
-                        [
-                            sg.B("OK"),
-                            sg.B("Cancel"),
-                        ],
-                    ],
-                ).read(close=True)
-                apikey = values["apikey"]
+                apikey = getapikey()
+                window["resultwindow"].update(apikey)
             else:
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
-                window["resultwindow"].update(result)
+                if status == 200:
+                    window["resultwindow"].update(result)
+                elif status == 401:
+                    sg.popup("Authentication error. API Key is set to " + apikey)
+                else:
+                    window["resultwindow"].update("Status: " + str(status))
         # validation logic deletes non-digits entered into phone number field
         elif (
             event == "target"
@@ -78,8 +73,29 @@ def main():
             and values["target"][-1] not in ("0123456789")
         ):
             window["target"].update(values["target"][:-1])
+        elif event == "Preferences":
+            apikey = getapikey()
+            window["resultwindow"].update("API Key: " + apikey)
     window.close()
     sys.exit(0)
+
+
+def getapikey():
+    values = sg.Window(
+        "API Key",
+        [
+            [
+                sg.Text("bulkvs.com API Key"),
+                sg.Input(key="apikey"),
+            ],
+            [sg.Text("Set the environment variable BULKAPI to avoid re-entry")],
+            [
+                sg.Button("OK"),
+                sg.Button("Cancel"),
+            ],
+        ],
+    ).read(close=True)
+    return values[1]["apikey"]
 
 
 if __name__ == "__main__":
