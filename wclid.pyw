@@ -20,7 +20,10 @@ menu_def = [
             "E&xit",
         ],
     ],
-    ["&Help", "&About..."],
+    [
+        "&Help",
+        ["&License", "&About"],
+    ],
 ]
 
 main_layout = [
@@ -56,14 +59,16 @@ def main():
                 sg.popup("Phone number must be 10 digits")
             elif apikey == "NONE":
                 apikey = getapikey()
-                window["resultwindow"].update(apikey)
+                window["resultwindow"].update("API key set to: "+apikey)
             else:
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
                 if status == 200:
-                    window["resultwindow"].update(result)
+                    window["resultwindow"].update(target + ": " + result)
                 elif status == 401:
-                    sg.popup("Authentication error. API Key is set to " + apikey)
+                    sg.popup(
+                        "Authentication error.\nAPI Key is set to '" + apikey + "'"
+                    )
                 else:
                     window["resultwindow"].update("Status: " + str(status))
         # validation logic deletes non-digits entered into phone number field
@@ -75,18 +80,24 @@ def main():
             window["target"].update(values["target"][:-1])
         elif event == "Preferences":
             apikey = getapikey()
-            window["resultwindow"].update("API Key: " + apikey)
+            window["resultwindow"].update("API Key: " + str(apikey))
+        elif event == "About":
+            about()
+        elif event == "License":
+            license()
     window.close()
     sys.exit(0)
 
 
 def getapikey():
-    values = sg.Window(
+    global apikey
+
+    event, values = sg.Window(
         "API Key",
         [
             [
                 sg.Text("bulkvs.com API Key"),
-                sg.Input(key="apikey"),
+                sg.Input(apikey, key="apikey"),
             ],
             [sg.Text("Set the environment variable BULKAPI to avoid re-entry")],
             [
@@ -95,7 +106,28 @@ def getapikey():
             ],
         ],
     ).read(close=True)
-    return values[1]["apikey"]
+    #    return(str(values)+" "+str(event))
+    if event == "OK":
+        entry = values["apikey"]
+        if len(entry) == 32:
+            return entry
+        else:
+            sg.popup(
+                "API keys are usually 32 characters long.\nYou provided "
+                + str(len(entry))
+                + " characters.\nYou may need to try again."
+            )
+            return entry
+    if event == "Cancel":
+        return apikey
+
+
+def license():
+    sg.popup(clid.licensetext, title="MIT License")
+
+
+def about():
+    sg.popup(clid.abouttext, title="About")
 
 
 if __name__ == "__main__":
