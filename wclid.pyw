@@ -59,7 +59,7 @@ def main():
                 sg.popup("Phone number must be 10 digits")
             elif apikey == "NONE":
                 apikey = getapikey()
-                window["resultwindow"].update("API key set to: "+apikey)
+                window["resultwindow"].update("API key set to: " + apikey)
             else:
                 target = clid.cleanup(values["target"])
                 result, status = clid.process(apikey, session, target)
